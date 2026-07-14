@@ -9,13 +9,16 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 
-const origin = typeof window !== 'undefined' ? window.location.origin : '';
-
 const Auth = () => {
   const router = useRouter();
   const { t } = useLanguage();
   const { toast } = useToast();
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [redirectTo, setRedirectTo] = useState('');
+
+  useEffect(() => {
+    setRedirectTo(`${window.location.origin}/dashboard`);
+  }, []);
 
   useEffect(() => {
     // Check for existing session and redirect if already logged in
@@ -44,7 +47,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${origin}/dashboard`,
+          redirectTo,
         },
       });
       if (error) {
@@ -146,7 +149,7 @@ const Auth = () => {
               },
             }}
             providers={[]}
-            redirectTo={`${origin}/dashboard`}
+            redirectTo={redirectTo}
           />
         </div>
 
