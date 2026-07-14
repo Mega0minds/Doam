@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 
+const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
 const Auth = () => {
   const router = useRouter();
   const { t } = useLanguage();
@@ -42,7 +44,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${origin}/dashboard`,
         },
       });
       if (error) {
@@ -144,7 +146,7 @@ const Auth = () => {
               },
             }}
             providers={[]}
-            redirectTo={`${window.location.origin}/dashboard`}
+            redirectTo={`${origin}/dashboard`}
           />
         </div>
 
