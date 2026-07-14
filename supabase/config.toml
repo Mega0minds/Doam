@@ -1,0 +1,45 @@
+project_id = "udrltstvoopvdesicsgr"
+
+[functions.generate-schedule]
+verify_jwt = true
+
+[functions.verify-proof]
+verify_jwt = true
+
+[functions.process-brain-dump]
+verify_jwt = true
+
+[functions.decompose-goals]
+verify_jwt = true
+
+[functions.record-feedback]
+verify_jwt = true
+
+[functions.goal-deepdive]
+verify_jwt = true
+
+[functions.generate-biography]
+verify_jwt = true
+
+[functions.send-daily-notifications]
+verify_jwt = false
+
+[functions.send-morning-motivation]
+verify_jwt = false
+
+[functions.send-task-reminders]
+verify_jwt = false
+
+[functions.send-sleep-wake-alarms]
+verify_jwt = false
+
+[functions.send-intelligent-nudges]
+verify_jwt = false
+
+[functions.get-vapid-public-key]
+verify_jwt = false
+
+[functions.send-test-notification]
+verify_jwt = true
+
+
