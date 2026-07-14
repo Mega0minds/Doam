@@ -1,13 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Providers } from "@/components/Providers";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { AlarmOverlay } from "@/components/AlarmOverlay";
 import "@/index.css";
 
+export const viewport: Viewport = {
+  themeColor: "#22d3ee",
+};
+
 export const metadata: Metadata = {
   title: "DoAm - AI-Powered Personal Scheduling",
   description: "DoAm helps you achieve your goals with personalized AI scheduling that respects your energy levels and priorities.",
-  themeColor: "#22d3ee",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -43,7 +47,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Providers>
           <PWAInstallPrompt />
-          <AlarmOverlay />
+          <Suspense>
+            <AlarmOverlay />
+          </Suspense>
           {children}
         </Providers>
       </body>
