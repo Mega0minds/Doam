@@ -32,12 +32,12 @@ export function DynamicGreeting({ className = '' }: DynamicGreetingProps) {
     <span
       className={`inline-flex flex-row items-center justify-start gap-3 sm:gap-4 align-middle ${className}`}
     >
-      {/* DoAm mascot in a small white sticker — Mobile: 80px (w-20), Desktop: 96px (w-24) */}
+      {/* DoAm mascot — no white frame */}
       <span className="sm:hidden inline-flex items-center">
-        <TobiMascot size={80} framed framePadding={6} waving />
+        <TobiMascot size={64} framed={false} waving />
       </span>
       <span className="hidden sm:inline-flex items-center">
-        <TobiMascot size={96} framed framePadding={8} waving />
+        <TobiMascot size={76} framed={false} waving />
       </span>
       <span className="leading-tight">
         {greeting}, {displayName}!

@@ -138,7 +138,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AuthModal open={showAuth} defaultTab={authTab} onClose={() => setShowAuth(false)} />
+      <AuthModal open={showAuth} defaultTab={authTab} onClose={() => setShowAuth(false)} initialEmail={email} />
 
       {/* ── Splash Screen ── */}
       {splashPhase !== "done" && (

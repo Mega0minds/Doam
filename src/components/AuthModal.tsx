@@ -11,6 +11,7 @@ interface AuthModalProps {
   open: boolean;
   defaultTab?: Tab;
   onClose: () => void;
+  initialEmail?: string;
 }
 
 const COUNTRY_CODES = [
@@ -85,7 +86,7 @@ const Field = ({
   </div>
 );
 
-export const AuthModal = ({ open, defaultTab = "signup", onClose }: AuthModalProps) => {
+export const AuthModal = ({ open, defaultTab = "signup", onClose, initialEmail = "" }: AuthModalProps) => {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -105,6 +106,10 @@ export const AuthModal = ({ open, defaultTab = "signup", onClose }: AuthModalPro
   const [focusedField, setFocusedField]     = useState<string | null>(null);
 
   useEffect(() => { setTab(defaultTab); }, [defaultTab]);
+
+  useEffect(() => {
+    if (open && initialEmail) setEmail(initialEmail);
+  }, [open, initialEmail]);
 
   useEffect(() => {
     if (!open) return;
@@ -168,7 +173,11 @@ export const AuthModal = ({ open, defaultTab = "signup", onClose }: AuthModalPro
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/dashboard` },
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+          scopes: "https://www.googleapis.com/auth/calendar",
+          queryParams: { access_type: "offline", prompt: "consent" },
+        },
       });
       if (error) throw error;
     } catch (err: any) {

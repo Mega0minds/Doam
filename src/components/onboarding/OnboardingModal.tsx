@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { supabase } from '@/integrations/supabase/client';
+import { WelcomeStep } from './steps/WelcomeStep';
 import { GoalsStep } from './steps/GoalsStep';
 import { EnergyStep } from './steps/EnergyStep';
 import { CommitmentsStep } from './steps/CommitmentsStep';
-import { WelcomeStep } from './steps/WelcomeStep';
 import { CompletionStep } from './steps/CompletionStep';
-import { Progress } from '@/components/ui/progress';
 import { useOnboardingProgress } from '@/hooks/useOnboardingProgress';
 
 export type OnboardingStep = 'welcome' | 'goals' | 'energy' | 'commitments' | 'complete';
@@ -35,7 +34,8 @@ export function OnboardingModal({ open, onOpenChange, onComplete }: OnboardingMo
   // Restore saved step when progress loads (only once)
   useEffect(() => {
     if (progress?.current_step && !restored) {
-      setCurrentStep(progress.current_step as OnboardingStep);
+      const step = progress.current_step as OnboardingStep;
+      setCurrentStep(step);
       setRestored(true);
     }
   }, [progress, restored]);
@@ -99,7 +99,7 @@ export function OnboardingModal({ open, onOpenChange, onComplete }: OnboardingMo
 
   const stepLabels: Record<OnboardingStep, string> = {
     welcome: 'Welcome',
-    goals: 'Set Your Goals',
+    goals: 'Your Goals',
     energy: 'Energy Profile',
     commitments: 'Fixed Commitments',
     complete: 'All Set!',
@@ -107,52 +107,51 @@ export function OnboardingModal({ open, onOpenChange, onComplete }: OnboardingMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh] overflow-y-auto p-0 sm:w-full">
-        <div className="p-4 sm:p-6">
-          {/* Progress Header */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                Step {currentIndex + 1} of {steps.length}
+      <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-0 sm:w-full border border-white/[0.12] bg-black/50 backdrop-blur-2xl shadow-2xl rounded-2xl">
+        {/* Glass inner highlight */}
+        <div className="absolute inset-0 rounded-2xl bg-[linear-gradient(135deg,rgba(255,255,255,0.06)_0%,transparent_50%)] pointer-events-none" />
+        {/* Subtle radial glow */}
+        <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,hsl(217_91%_55%/0.10),transparent)] pointer-events-none" />
+
+        <div className="relative p-5 sm:p-7">
+          {/* Step label */}
+          {currentStep !== 'welcome' && currentStep !== 'complete' && (
+            <div className="flex items-center justify-between mb-5">
+              <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground/60">
+                Step {currentIndex} of {steps.length - 2}
               </span>
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-xs font-semibold text-primary/80 tracking-wide">
                 {stepLabels[currentStep]}
               </span>
             </div>
-            <Progress value={progressValue} className="h-2" />
-            {progress?.current_step && progress.current_step !== 'welcome' && (
-              <p className="text-xs text-muted-foreground mt-1 text-center">
-                ✓ Your progress is saved — you'll resume here if you leave
-              </p>
-            )}
-          </div>
+          )}
 
           {/* Step Content */}
-          <div className="min-h-[300px] sm:min-h-[400px]">
+          <div className="min-h-[360px]">
             {currentStep === 'welcome' && (
-              <WelcomeStep onNext={handleNext} />
+              <WelcomeStep onNext={() => goToStep('goals')} />
             )}
             {currentStep === 'goals' && userId && (
-              <GoalsStep 
-                userId={userId} 
-                onNext={handleGoalsSaved} 
-                onBack={handleBack} 
+              <GoalsStep
+                userId={userId}
+                onNext={handleGoalsSaved}
+                onBack={handleBack}
                 savedData={progress?.goals_data}
               />
             )}
             {currentStep === 'energy' && userId && (
-              <EnergyStep 
-                userId={userId} 
-                onNext={handleEnergySaved} 
-                onBack={handleBack} 
+              <EnergyStep
+                userId={userId}
+                onNext={handleEnergySaved}
+                onBack={handleBack}
                 savedData={progress?.energy_data}
               />
             )}
             {currentStep === 'commitments' && userId && (
-              <CommitmentsStep 
-                userId={userId} 
-                onNext={handleCommitmentsSaved} 
-                onBack={handleBack} 
+              <CommitmentsStep
+                userId={userId}
+                onNext={handleCommitmentsSaved}
+                onBack={handleBack}
                 savedData={progress?.commitments_data}
               />
             )}
@@ -160,6 +159,12 @@ export function OnboardingModal({ open, onOpenChange, onComplete }: OnboardingMo
               <CompletionStep onComplete={handleComplete} />
             )}
           </div>
+
+          {progress?.current_step && !['welcome', 'goals'].includes(progress.current_step) && (
+            <p className="text-xs text-muted-foreground/40 text-center mt-4">
+              Progress auto-saved — you can resume anytime
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
