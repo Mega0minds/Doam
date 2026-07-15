@@ -1,9 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/integrations/supabase/client';
 
-export default function GoogleCalendarCallback() {
+function GoogleCalendarCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -65,5 +65,13 @@ export default function GoogleCalendarCallback() {
         <p className="text-sm text-muted-foreground">{message}</p>
       </div>
     </div>
+  );
+}
+
+export default function GoogleCalendarCallback() {
+  return (
+    <Suspense>
+      <GoogleCalendarCallbackInner />
+    </Suspense>
   );
 }
